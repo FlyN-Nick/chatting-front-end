@@ -1,0 +1,112 @@
+@import url('https://fonts.googleapis.com/css?family=Raleway|Source+Sans+Pro:400,700|Sriracha&display=swap');
+
+ol, ul 
+{
+  padding-left: 30px;
+}
+
+body
+{
+  /*
+   * https://www.inmatrix.com/skins/background/Default_Nav[1920x1080].png
+   * https://previews.123rf.com/images/vkulieva/vkulieva1602/vkulieva160200007/52452427-seamless-pattern-for-todo-list-universal-background.jpg
+  */
+  background: url('./ChatBubbleBackground.jpg') no-repeat center fixed;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
+#ttl /*The titl.*/
+{
+  color: rgb(0, 0, 0);
+  font-family: Raleway;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.infoText /*Text below title.*/
+{
+  color: rgba(255, 255, 255, 0.75);
+}
+
+.basicText /*Text of each todo item.*/
+{
+  color: rgb(0, 0, 0);
+}
+
+.todo-item /*Div of each todo item.*/
+{
+  border: 2px solid rgba(255, 255, 255, 0.20);
+  border-radius: 10px 10px 10px 10px;
+  width: 25%;
+  margin-bottom: 0px;
+}
+
+h1
+{
+  font-size: 3em;
+}
+
+.clearButton
+{
+  font-weight: 800;
+  margin-right: 10px;
+}
+
+.leaveButton
+{
+  font-weight: 800;
+  margin-right: 10px;
+}
+
+.endorseButton
+{
+  font-weight: 800;
+  margin-right: 10px;
+}
+
+#addButtonField
+{
+  margin-right: 1%;
+}
+
+.card
+{
+  margin-top: 5%;
+  margin-bottom: 5%;
+}
+
+.text-input
+{
+  margin-bottom: 1%;
+}
+
+footer 
+{
+  position: sticky;
+  margin-left: 0px;
+  padding-left: 0px;
+  bottom: 0px;
+  min-width: 250px;
+  max-width: 407px;
+}
+
+.copyright 
+{
+  color: #fff;
+  line-height: 15px;
+  font-size: .8em;
+  background-color: rgba(0, 0, 0, 0.2);
+  border-color: rgba(0, 0, 0, 0.2);
+  border-radius: 10px;
+  padding-left: 3px;
+  padding-top: 3px;
+  padding-bottom: 3px;
+}
+#description
+{
+  font-size: 1.5em;
+}

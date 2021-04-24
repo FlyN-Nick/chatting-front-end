@@ -1,6 +1,6 @@
 {
   "hosting": {
-    "target": "chattin",
+    "target": "chatting",
     "public": "build",
     "ignore": [
       "firebase.json",

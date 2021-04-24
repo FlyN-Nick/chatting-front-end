@@ -161,8 +161,9 @@ class Main extends React.Component
             <div className="container">
               <h5 id="copyright" className="infoText copyright">
                 <a href={"https://github.com/FlyN-Nick/chatting-front-end"} className="link">
-                  Made with <span role="img" aria-label="heart">❤️</span>
-                </a> by FlyN-Nick.
+                  Made with <span role="img" aria-label="heart">❤️ </span>
+                </a>
+                <a href={"https://github.com/FlyN-Nick"} className="link"> by FlyN-Nick</a>.
               </h5>
             </div>
           </footer>
@@ -436,7 +437,7 @@ class Main extends React.Component
             || e.key === "Alt"       || e.key === "Control" 
             || e.key === "Escape"    || e.key === "ArrowLeft" 
             || e.key === "ArrowRight"|| e.key === "ArrowUp" 
-            || e.key === "ArrowDown" || e.key ==="Enter")) // if key is an actual letter/symbol/number, alternatively I could store all of these keys in an array and check if the array contains e.key
+            || e.key === "ArrowDown" || e.key === "Enter")) // if key is an actual letter/symbol/number, alternatively I could store all of these keys in an array and check if the array contains e.key
     {   
       let temp = this.state.text;
       temp += e.key;

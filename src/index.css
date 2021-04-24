@@ -120,6 +120,10 @@ footer
 }
 
 .link:hover {
-  color: #55ABCD;
+  color: white;
   font-weight: 700;
+}
+
+a {
+  color: white;
 }

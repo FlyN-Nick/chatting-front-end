@@ -5,8 +5,11 @@
   "targets": {
     "chat-n-5b27d": {
       "hosting": {
-        "chattin": [
+        "production": [
           "flynchattin"
+        ],
+        "testing": [
+          "chat-n-5b27d"
         ]
       }
     }

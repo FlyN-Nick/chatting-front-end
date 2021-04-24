@@ -117,6 +117,7 @@ footer
 
 .link { /* Repo link. */
   transition: 0.3s;
+  color: white;
 }
 
 .link:hover {

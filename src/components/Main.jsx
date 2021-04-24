@@ -83,7 +83,7 @@ let oneDelay = true; // a boolean that is supposed to delay the callAPI once bef
            </div>
            <footer>
              <div className="container">
-               <h5 id="copyright" className="infoText copyright">
+               <h5 id="copyright" className="copyright">
                  <a href={"https://github.com/FlyN-Nick/chatting-front-end"} className="link">
                    Made with <span role="img" aria-label="heart">❤️ </span>
                  </a>

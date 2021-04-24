@@ -7588,6 +7588,11 @@
     "emojis-list" "^2.0.0"
     "json5" "^1.0.1"
 
+"local-storage@^2.0.0":
+  "integrity" "sha512-/0sRoeijw7yr/igbVVygDuq6dlYCmtsuTmmpnweVlVtl/s10pf5BCq8LWBxW/AMyFJ3MhMUuggMZiYlx6qr9tw=="
+  "resolved" "https://registry.npmjs.org/local-storage/-/local-storage-2.0.0.tgz"
+  "version" "2.0.0"
+
 "locate-path@^2.0.0":
   "integrity" "sha1-K1aLJl7slExtnA3pw9u7ygNUzY4="
   "resolved" "https://registry.npmjs.org/locate-path/-/locate-path-2.0.0.tgz"

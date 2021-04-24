@@ -5,7 +5,7 @@
   "targets": {
     "chat-n-5b27d": {
       "hosting": {
-        "chatting": [
+        "production": [
           "flynchattin"
         ],
         "testing": [

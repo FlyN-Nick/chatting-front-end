@@ -1,5 +1,14 @@
 {
   "projects": {
     "default": "chat-n-5b27d"
+  },
+  "targets": {
+    "chat-n-5b27d": {
+      "hosting": {
+        "chattin": [
+          "flynchattin"
+        ]
+      }
+    }
   }
 }

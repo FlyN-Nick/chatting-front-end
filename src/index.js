@@ -12,6 +12,11 @@ let currentlySigningIn = false;  // if the user is in the middle of autheenticat
 let successfullySignedIn = false; // if the user successfully signed in
 let oneDelay = true; // a boolean that is supposed to delay the callAPI once before authentication (to allow the rest of the website to load)
 
+/**
+ * A single message.
+ * @param {*} props 
+ * @returns {JSX.Element} message
+ */
 function Message(props) // makes a message item, which is just a message + a remove button + the message sender
 {
   if (props.message.sender === props.currentUser) // I use a if statement so that when the sender of a message isn't the user, they can't delete it
@@ -50,7 +55,10 @@ function Message(props) // makes a message item, which is just a message + a rem
   }
 }
 
-class Messages extends React.Component // this component is a list of all the message items (look above)
+/**
+ * Array of messages.
+ */
+class Messages extends React.Component
 {
   render()
   {
@@ -67,7 +75,10 @@ class Messages extends React.Component // this component is a list of all the me
   }
 }
 
-class EndorsementLevelText extends React.Component // shows user's endorsement level
+/**
+ * Shows user's endorsement level.
+ */
+class EndorsementLevelText extends React.Component
 {
   render()
   {
@@ -81,7 +92,10 @@ class EndorsementLevelText extends React.Component // shows user's endorsement l
   }
 }
 
-class Main extends React.Component // This is the componenet I put in the ReactDOM.render
+/**
+ * The component I put in ReactDOM.render.
+ */
+class Main extends React.Component 
 {
   constructor()
   {
@@ -89,14 +103,14 @@ class Main extends React.Component // This is the componenet I put in the ReactD
     if (!initialized) // initialize firebase if not already
     { 
       const firebaseConfig = {
-      apiKey: "AIzaSyClTbaU2az8dn8SDkQtuPsWq5j_zM-_uQI",
-      authDomain: "chat-n-5b27d.firebaseapp.com",
-      databaseURL: "https://chat-n-5b27d.firebaseio.com",
-      projectId: "chat-n-5b27d",
-      storageBucket: "chat-n-5b27d.appspot.com",
-      messagingSenderId: "950111768511",
-      appId: "1:950111768511:web:93a3f1bf32e586348f9b0a"
-    };
+        apiKey: "AIzaSyClTbaU2az8dn8SDkQtuPsWq5j_zM-_uQI",
+        authDomain: "chat-n-5b27d.firebaseapp.com",
+        databaseURL: "https://chat-n-5b27d.firebaseio.com",
+        projectId: "chat-n-5b27d",
+        storageBucket: "chat-n-5b27d.appspot.com",
+        messagingSenderId: "950111768511",
+        appId: "1:950111768511:web:93a3f1bf32e586348f9b0a"
+      };
       firebase.initializeApp(firebaseConfig); 
       initialized = true;
     }
@@ -145,171 +159,108 @@ class Main extends React.Component // This is the componenet I put in the ReactD
           </div>
           <footer>
             <div className="container">
-              <h5 id="copyright" className="infoText copyright">© Liege LLC. All rights reserved. I'm FlyN outta here, byeee!®</h5>
-              </div>
+              <h5 id="copyright" className="infoText copyright">
+                <a href={"https://github.com/FlyN-Nick/chatting-front-end"} className="link">
+                  Made with <span role="img" aria-label="heart">❤️</span>
+                </a> by FlyN-Nick.
+              </h5>
+            </div>
           </footer>
         </div>
       </div>
     );
   }
-  callAPI() // fetch the backend
+
+  async callAPI() // fetch the backend
   {
-    if (currentlySigningIn) // do nothing if it is in the middle of authenticating
+    try 
     {
-      console.log("Middle of signing in...");
-    } 
-    else if (this.state.currentUserID === '') // if the user hasn't started auth yet and needs to
-    { 
-      if (!oneDelay)
+      if (currentlySigningIn) // do nothing if it is in the middle of authenticating
       {
-        currentlySigningIn = true;
-        firebase.auth().signOut()
-        this.handleAuth();
+        console.log("Middle of signing in...");
+      } 
+      else if (this.state.currentUserID === '') // if the user hasn't started auth yet and needs to
+      { 
+        if (!oneDelay)
+        {
+          currentlySigningIn = true;
+          firebase.auth().signOut();
+          this.handleAuth();
+        }
+        else { oneDelay = false }
       }
-      else { oneDelay = false }
-    }
-    else if (this.state.chatRoomID == null || this.state.chatRoomID === undefined || this.state.chatRoomID === "") // if the user isn't in a chatroom
-    {
-      fetch('https://flyn-chattin.herokuapp.com/find', { // key note that the user is navigating to /find, this fetch will find a chatroom for the user
-        method: 'put', // method is put so that it can fetch with an additional json
-        body: JSON.stringify(
+      else 
+      {
+        let awaitedPromise;
+  
+        if (this.state.chatRoomID == null || this.state.chatRoomID === undefined || this.state.chatRoomID === "") // if the user isn't in a chatroom
         {
-            'find' : this.state.currentUserID, 
-        }),
-        headers: {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
-      })
-        .then(res => 
-        {
-          let temp = res.text();
-          return temp;
-        })
-        .then(res => 
-        {
-          let temp = JSON.parse(res);
-          return temp;
-        })
-        .then(res => 
-        {
-          let initialRes = res;
-          fetch('https://flyn-chattin.herokuapp.com/getEndorsementLevel', { // fetch for the endorsement level of the user
+          awaitedPromise = await fetch('https://flyn-chattin.herokuapp.com/find', { // key note that the user is navigating to /find, this fetch will find a chatroom for the user
             method: 'put', // method is put so that it can fetch with an additional json
             body: JSON.stringify(
             {
-              'userID' : this.state.currentUserID
+                'find' : this.state.currentUserID, 
             }),
             headers: {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
-          })
-            .then(res =>
+          });
+        }
+        else
+        {
+          awaitedPromise = await fetch('https://flyn-chattin.herokuapp.com/get', { // just a regular /get request, this gets called every second (look at fetchFrequency var)
+            method: 'put', // method is put so that it can fetch with an additional json
+            body: JSON.stringify(
             {
-              let temp = res.text();
-              return temp;
-            })
-            .then(res =>
-            {
-              let temp = JSON.parse(res);
-              return temp;
-            })
-            .then(res =>
-            {
-              if (initialRes[0].userOneID === this.state.currentUserID) // figure out who the user is chatting with
-              {
-                this.setState({ // set the new state 
-                  chatRoomID: initialRes[0].chatRoomID,
-                  messages: initialRes[0].messages,
-                  level: res.level,
-                  chattingWithUserID: initialRes[0].userTwoID
-                });
-              }
-              else
-              {
-                this.setState({ // set the new state 
-                  chatRoomID: initialRes[0].chatRoomID,
-                  messages: initialRes[0].messages,
-                  level: res.level,
-                  chattingWithUserID: initialRes[0].userOneID
-                });
-              }
-            })
-            .catch(err => err)
-        })
-          .catch(err => err)
-    }
-    else
-    {
-      fetch('https://flyn-chattin.herokuapp.com/get', { // just a regular /get request, this gets called every second (look at fetchFrequency var)
+                'chatRoomID' : this.state.chatRoomID,
+            }),
+            headers: {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+          });
+        }
+  
+        let initialRes = await JSON.parse(await awaitedPromise.text());
+  
+        let secondAwaitedPromise = await fetch('https://flyn-chattin.herokuapp.com/getEndorsementLevel', { // fetch for the endorsement level of the user
           method: 'put', // method is put so that it can fetch with an additional json
           body: JSON.stringify(
           {
-              'chatRoomID' : this.state.chatRoomID,
+            'userID' : this.state.currentUserID
           }),
           headers: {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
-        })
-          .then(res => 
-          {
-            let temp = res.text();
-            return temp;
-          })
-          .then(res => 
-          {
-            let temp = JSON.parse(res);
-            return temp;
-          })
-          .then(res => 
-          {
-            let initialRes = res;
-            fetch('https://flyn-chattin.herokuapp.com/getEndorsementLevel', { // fetch for the endorsement level of the user
-              method: 'put', // method is put so that it can fetch with an additional json
-              body: JSON.stringify(
-              {
-                'userID' : this.state.currentUserID
-              }),
-              headers: {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
-            })
-              .then(res => 
-              {
-                let temp = res.text();
-                return temp;
-              })
-              .then(res => 
-              {
-                let temp = JSON.parse(res);
-                return temp;
-              })
-              .then(res => 
-              {
-                if (initialRes[0].userOneID === this.state.currentUserID) // figure out who the user is chatting with
-                {
-                  this.setState({ // set the new state 
-                    chatRoomID: initialRes[0].chatRoomID,
-                    messages: initialRes[0].messages,
-                    level: res.level,
-                    chattingWithUserID: initialRes[0].userTwoID
-                  });
-                }
-                else
-                {
-                  this.setState({ // set the new state 
-                    chatRoomID: initialRes[0].chatRoomID,
-                    messages: initialRes[0].messages,
-                    level: res.level,
-                    chattingWithUserID: initialRes[0].userOneID
-                  });
-                }
-              })
-              .catch(err => err)
-            })
-            .catch(err => err)
+        });
+  
+        let res = await JSON.parse(await secondAwaitedPromise.text());
+        
+        if (initialRes[0].userOneID === this.state.currentUserID) // figure out who the user is chatting with
+        {
+          this.setState({ // set the new state 
+            chatRoomID: initialRes[0].chatRoomID,
+            messages: initialRes[0].messages,
+            level: res.level,
+            chattingWithUserID: initialRes[0].userTwoID
+          });
+        }
+        else
+        {
+          this.setState({ // set the new state 
+            chatRoomID: initialRes[0].chatRoomID,
+            messages: initialRes[0].messages,
+            level: res.level,
+            chattingWithUserID: initialRes[0].userOneID
+          });
+        }
       }
+    }
+    catch (err) { console.error(`Caught error: ${err}`) }
   }
-  componentDidMount() 
+
+  async componentDidMount() 
   {
     this.interval = setInterval(() => this.callAPI(), fetchFrequency); // makes a timer that fetches the backend every fetchFrequency
-    this.callAPI();
+    await this.callAPI();
   }
-  componentWillUnmount() 
-  {
-    clearInterval(this.interval);
-  }
+
+  componentWillUnmount() { clearInterval(this.interval); }
+
+  /** Handles authentication (signin/signup). */
   handleAuth()
   {
     let userName = ls.get('ChatN_User_ID') || ""; // if the local storage has the user's id, set userName to that, else set it to an empty string
@@ -317,7 +268,7 @@ class Main extends React.Component // This is the componenet I put in the ReactD
     let idLength = 8; // length of the userID's 
     let characters = '0123456789'; // characters that can be used in the user id
     if (userName === "") { signUp = true } // if the local storage didn't have the user's id, the user is signing up
-    console.log("handleAuth called.")
+    console.log("handleAuth called.");
     if (firebase.auth().currentUser || successfullySignedIn) // if the user is already signed in
     {
       currentlySigningIn = false; 
@@ -331,7 +282,7 @@ class Main extends React.Component // This is the componenet I put in the ReactD
         random_id += characters.charAt(Math.floor(Math.random() * characters.length)); // not the best method of random generation
       }
       userName = random_id;
-      let password = prompt("Please sign up with a password.")
+      let password = prompt("Please sign up with a password.");
       if (password == null) 
       { 
         window.location.href = 'http://www.google.com/'; // the user pressed cancel and this is the alternative to essentially closing the web page
@@ -359,7 +310,7 @@ class Main extends React.Component // This is the componenet I put in the ReactD
     }
     else
     {
-      let password = prompt("Please sign in with your password.")
+      let password = prompt("Please sign in with your password.");
       if (password == null) 
       { 
         window.location.href = 'http://www.google.com/';
@@ -382,7 +333,7 @@ class Main extends React.Component // This is the componenet I put in the ReactD
             else if (errorCode === 'auth/user-not-found') 
             { 
               alert(errorMessage);
-              ls.remove('ChatN_User_ID')
+              ls.remove('ChatN_User_ID');
             }
             else { alert(errorMessage) }
             console.log(err);
@@ -390,7 +341,8 @@ class Main extends React.Component // This is the componenet I put in the ReactD
         });   
     }
   }
-  handleRemoveAll() // a handler that clears (deletes) all of your messages (will not delete other people's messages)
+
+  async handleRemoveAll() // a handler that clears (deletes) all of your messages (will not delete other people's messages)
   {
     if (this.state.chatRoomID == null || this.state.chatRoomID === undefined || this.state.chatRoomID === "") // fail-safe
     {
@@ -405,50 +357,49 @@ class Main extends React.Component // This is the componenet I put in the ReactD
         newMessages.push(message);
       }
     }
-    fetch('https://flyn-chattin.herokuapp.com/delete',  // fetch to the backend witfch /delete
+    try
     {
-      method: 'put',
-      headers: {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
-      body: JSON.stringify(
+      await fetch('https://flyn-chattin.herokuapp.com/delete',  // fetch to the backend witfch /delete
       {
-          'chatRoomID' : this.state.chatRoomID,
-          'messages' : newMessages,
-      }),
-    })
-    .then(res => this.callAPI())
+        method: 'put',
+        headers: {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+        body: JSON.stringify(
+        {
+            'chatRoomID' : this.state.chatRoomID,
+            'messages' : newMessages,
+        }),
+      });
+      await this.callAPI();
+    }
+    catch(err) { console.error(`Caught error: ${err}`) }
   }
-  handleLeave() // handler that allows user to leave chatroom upon button press
+
+  async handleLeave() // handler that allows user to leave chatroom upon button press
   {
     if (this.state.chatRoomID == null || this.state.chatRoomID === undefined || this.state.chatRoomID === "") // fail-safe
     {
       console.error("Error: you're not even in a chatroom...");
       return;
     }
-    fetch('https://flyn-chattin.herokuapp.com/leave', // fetch to the backend with /leave 
+    try 
     {
-      method: 'put',
-      body: JSON.stringify(
+      await fetch('https://flyn-chattin.herokuapp.com/leave', // fetch to the backend with /leave 
       {
-          'chatRoomID' : this.state.chatRoomID,
-          'remove' : this.state.currentUserID,
-      }),
-      headers: {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
-    })
-      .then(res =>  
-      {
-        clearInterval(this.interval); // if the timer isn't stopped the user will automatically join another chatroom
-        window.close(); // this should close the tab, but unfortunately doesn't work in many browsers for security reasons 
-        window.location.href = 'http://www.google.com/'; // just navigates the user to google instead because ^
-      })
-      .catch(err => 
-      {
-        console.error(err);
-        clearInterval(this.interval);
-        window.close();
-        window.location.href = 'http://www.google.com/';
-      })
+        method: 'put',
+        body: JSON.stringify(
+        {
+            'chatRoomID' : this.state.chatRoomID,
+            'remove' : this.state.currentUserID,
+        }),
+        headers: {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+      });
+    }
+    catch (err) { console.error(`Caught error: ${err}`) }
+    clearInterval(this.interval); // if the timer isn't stopped the user will automatically join another chatroom
+    window.close(); // this should close the tab, but unfortunately doesn't work in many browsers for security reasons 
+    window.location.href = 'http://www.google.com/'; // just navigates the user to google instead because ^
   }
-  handleTextChange(e) // a handler that adds a new message when enter is pressed
+  async handleTextChange(e) // a handler that adds a new message when enter is pressed
   {
     if (e.key === 'Enter' && this.state.text !== '') // if the user isn't sending an empty message
     {
@@ -457,24 +408,28 @@ class Main extends React.Component // This is the componenet I put in the ReactD
         console.error("Error: you're not even in a chatroom...");
         return;
       }
-      this.setState({text: '', })
-      fetch('https://flyn-chattin.herokuapp.com/send', // post new message to the backend with /send
+      this.setState({ text: '' });
+      try
       {
-        method: 'post',
-        headers: {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
-        body: JSON.stringify(
+        await fetch('https://flyn-chattin.herokuapp.com/send', // post new message to the backend with /send
         {
-          'chatRoomID' : this.state.chatRoomID,
-          'message' : e.target.value,
-          'sender' : this.state.currentUserID,
-        }),
-      })
-      .then(res => this.callAPI())
+          method: 'post',
+          headers: {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+          body: JSON.stringify(
+          {
+            'chatRoomID' : this.state.chatRoomID,
+            'message' : e.target.value,
+            'sender' : this.state.currentUserID,
+          }),
+        });
+        await this.callAPI();
+      }
+      catch(err) { console.error(`Caught error: ${err}`) }
     }
     else if (e.key === 'Backspace')
     {
       let temp = this.state.text;
-      this.setState({text: temp.substring(0, temp.length-1)});
+      this.setState({ text: temp.substring(0, temp.length-1) });
     }
     else if (!(e.key === 'Tab'       || e.key === 'CapsLock' 
             || e.key === 'Shift'     || e.key === "Meta" 
@@ -488,7 +443,8 @@ class Main extends React.Component // This is the componenet I put in the ReactD
       this.setState({text: temp});
     }
   }
-  handleRemoveButton(i) // a handler that removes a message at a specified index
+
+  async handleRemoveButton(i) // a handler that removes a message at a specified index
   {
     if (this.state.chatRoomID == null || this.state.chatRoomID === undefined || this.state.chatRoomID === "") // fail-safe
     {
@@ -497,43 +453,37 @@ class Main extends React.Component // This is the componenet I put in the ReactD
     }
     let newMessages = this.state.messages;
     newMessages.splice(i, 1); // remove message from message arr
-    fetch('https://flyn-chattin.herokuapp.com/delete', // post to the backend
+    try
     {
-      method: 'put',
-      headers: {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
-      body: JSON.stringify(
+      await fetch('https://flyn-chattin.herokuapp.com/delete', // post to the backend
       {
-          'chatRoomID' : this.state.chatRoomID,
-          'messages' : newMessages,
-      }),
-    })
-    .then(res => this.callAPI())
+        method: 'put',
+        headers: {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+        body: JSON.stringify(
+        {
+            'chatRoomID' : this.state.chatRoomID,
+            'messages' : newMessages,
+        }),
+      });
+      await this.callAPI();
+    }
+    catch (err) { console.error(`Caught error: ${err}`) }
   }
-  handleEndorse() // a handler that endorses the person the user is chatting with
+  async handleEndorse() // a handler that endorses the person the user is chatting with
   {
     if (this.state.chattingWithUserID === '' || this.state.chattingWithUserID == null) { return } // if the user isn't talking to anybody (most likely because the person they were talking to left)
-    fetch('https://flyn-chattin.herokuapp.com/endorse', { // fetch with /endorse
-      method: 'put',
-      body: JSON.stringify(
-      {
-          'userID' : this.state.chattingWithUserID,
-      }),
-      headers: {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
-    })
-      .then(res => 
-      {
-        let temp = res.text();
-        return temp;
-      })
-      .then(res => 
-      {
-        let temp = JSON.parse(res);
-        return temp;
-      })
-      .then(res => 
-      {
-      })
-      .catch(err => err)     
+    try
+    {
+      await fetch('https://flyn-chattin.herokuapp.com/endorse', { // fetch with /endorse
+        method: 'put',
+        body: JSON.stringify(
+        {
+            'userID' : this.state.chattingWithUserID,
+        }),
+        headers: {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+      });
+    }
+    catch(err) { console.error(`Caught error: ${err}`) }
   }
 }
 

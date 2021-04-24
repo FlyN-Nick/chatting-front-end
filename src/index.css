@@ -19,9 +19,12 @@ body
   background-repeat: no-repeat;
 }
 
-#ttl /*The titl.*/
+#ttl /*The title.*/
 {
-  color: rgb(0, 0, 0);
+  background: linear-gradient(to right bottom, #da7979, #ffa5fa);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
   font-family: Raleway;
   font-weight: 700;
   text-transform: uppercase;
@@ -106,7 +109,17 @@ footer
   padding-top: 3px;
   padding-bottom: 3px;
 }
+
 #description
 {
   font-size: 1.5em;
+}
+
+.link { /* Repo link. */
+  transition: 0.3s;
+}
+
+.link:hover {
+  color: #55ABCD;
+  font-weight: 700;
 }

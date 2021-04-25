@@ -1,5 +1,3 @@
-type EndorsementLevelTextProp = {
-    level: Number | string
-}
+type EndorsementLevelTextProp = { level: Number }
 
 export default EndorsementLevelTextProp;

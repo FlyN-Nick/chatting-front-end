@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import EndorsementLevelText from './EndorsementLevelText';
 import Messages from './Messages';
 
-import ls from 'local-storage';
+import { get, set, remove } from 'local-storage';
 
 import '../bootstrap/css/bootstrap.min.css';
 import '../index.css';
@@ -11,6 +11,7 @@ import '../index.css';
 import firebase from "firebase/app"; // firebase is used to validate users 
 import 'firebase/auth';
 import 'firebase/firestore';
+import MessageData from '../Types/MessageData';
 
 let fetchFrequency = 1000; // how often the user is going to fetch, in milliseconds 
 let initialized = false; // if firebase has been authenticated 
@@ -18,12 +19,23 @@ let currentlySigningIn = false;  // if the user is in the middle of autheenticat
 let successfullySignedIn = false; // if the user successfully signed in
 let oneDelay = true; // a boolean that is supposed to delay the callAPI once before authentication (to allow the rest of the website to load)
 
+type MainState = {
+  chatRoomID: string,
+  messages: MessageData[],
+  text: string,
+  currentUserID: string,
+  level: number,
+  chattingWithUserID: string
+}
+
 /** Parent component for everything, contains all the auth and fetching logic. */
- class Main extends Component 
+ class Main extends Component<{}, MainState> 
  {
-   constructor()
+   interval: NodeJS.Timeout | undefined;
+
+   constructor(props: {})
    {
-     super();
+     super(props);
      if (!initialized) // initialize firebase if not already
      { 
        const firebaseConfig = {
@@ -183,12 +195,12 @@ let oneDelay = true; // a boolean that is supposed to delay the callAPI once bef
      await this.callAPI();
    }
  
-   componentWillUnmount() { clearInterval(this.interval); }
+   componentWillUnmount() { clearInterval(this.interval as NodeJS.Timeout); }
  
    /** Handles authentication (signin/signup). */
    handleAuth()
    {
-     let userName = ls.get('ChatN_User_ID') || ""; // if the local storage has the user's id, set userName to that, else set it to an empty string
+     let userName = get<string>('ChatN_User_ID') || ""; // if the local storage has the user's id, set userName to that, else set it to an empty string
      let signUp = false; // if the user is signing up or logging in
      let idLength = 8; // length of the userID's 
      let characters = '0123456789'; // characters that can be used in the user id
@@ -220,7 +232,7 @@ let oneDelay = true; // a boolean that is supposed to delay the callAPI once bef
            console.dir(user);
            currentlySigningIn = false;
            successfullySignedIn = true;
-           ls.set('ChatN_User_ID', userName);
+           set('ChatN_User_ID', userName); // set local storage
            this.setState({ currentUserID: userName });
          })
          .catch(err => 
@@ -258,7 +270,7 @@ let oneDelay = true; // a boolean that is supposed to delay the callAPI once bef
              else if (errorCode === 'auth/user-not-found') 
              { 
                alert(errorMessage);
-               ls.remove('ChatN_User_ID');
+               remove('ChatN_User_ID'); // remove from local storage
              }
              else { alert(errorMessage) }
              console.log(err);
@@ -274,7 +286,7 @@ let oneDelay = true; // a boolean that is supposed to delay the callAPI once bef
        console.error("Error: you're not even in a chatroom...");
        return;
      }
-     let newMessages = [];
+     let newMessages: MessageData[] = [];
      for (let message of this.state.messages)
      {
        if (message.sender !== this.state.currentUserID)
@@ -320,7 +332,7 @@ let oneDelay = true; // a boolean that is supposed to delay the callAPI once bef
        });
      }
      catch (err) { console.error(`Caught error: ${err}`) }
-     clearInterval(this.interval); // if the timer isn't stopped the user will automatically join another chatroom
+     clearInterval(this.interval as NodeJS.Timeout); // if the timer isn't stopped the user will automatically join another chatroom
      window.close(); // this should close the tab, but unfortunately doesn't work in many browsers for security reasons 
      window.location.href = 'http://www.google.com/'; // just navigates the user to google instead because ^
    }

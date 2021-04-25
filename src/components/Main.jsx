@@ -62,7 +62,7 @@ let oneDelay = true; // a boolean that is supposed to delay the callAPI once bef
        <div>
          <div className="jumbotron">
            <div className="container">
-             <h1 id="ttl" className="display-2">|\Chat'n/|</h1>
+             <h1 id="ttl" className="display-2">Chat'N</h1>
              <p id="description">A simple way to connect amid a crisis.</p>
            </div>
          </div>

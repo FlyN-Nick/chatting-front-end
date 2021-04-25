@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
+import EndorsementLevelTextProp from '../Types/EndorsementLevelTextProp';
 
 /** Shows user's endorsement level. */
- class EndorsementLevelText extends Component
+ class EndorsementLevelText extends Component<EndorsementLevelTextProp>
  {
    render()
    {

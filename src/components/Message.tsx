@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
+import MessageProps from '../Types/MessageProps';
 
 /** A single message. */
-class Message extends Component
+class Message extends Component<MessageProps>
 {
     render()
     {

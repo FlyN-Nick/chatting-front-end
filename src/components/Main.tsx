@@ -72,7 +72,7 @@ type MainState = {
    {
      return (
        <div>
-         <div className="jumbotron">
+         <div className="jumbotron" id="banner">
            <div className="container">
              <h1 id="ttl" className="display-2">Chat'N</h1>
              <p id="description">A simple way to connect amid a crisis.</p>

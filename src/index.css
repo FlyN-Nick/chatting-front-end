@@ -17,11 +17,13 @@ body
   -o-background-size: cover;
   background-size: cover;
   background-repeat: no-repeat;
+  /*background-color: rgb(32, 32, 32);*/
 }
 
 #ttl /*The title.*/
 {
-  background: linear-gradient(to right bottom, #da7979, #ffa5fa);
+  background: linear-gradient(to right bottom, #ff5151, #ff57f7);
+  width: 500px;
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -113,18 +115,29 @@ footer
 #description
 {
   font-size: 1.5em;
+  /*color: lavender;*/
 }
 
-.link { /* Repo link. */
+.link /* Repo link. */
+{
   transition: 0.3s;
   color: white;
 }
 
-.link:hover {
+.link:hover 
+{
   color: white;
   font-weight: 700;
 }
 
-a {
+a 
+{
   color: white;
+}
+
+
+#banner 
+{
+  /*background-color: rgb(32, 32, 32);*/
+  background-color: rgb(247, 247, 247);
 }

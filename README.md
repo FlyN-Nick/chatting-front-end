@@ -6,4 +6,4 @@ Hosted with firebase.
 
 Now written in TS!
 
-Checkout the backend repo [chatting-back-end](https://github.com/FlyN-Nick/chatting-back-end).
+Check out the backend repository [chatting-back-end](https://github.com/FlyN-Nick/chatting-back-end).
